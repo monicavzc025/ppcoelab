@@ -80,7 +80,7 @@ jobs:
       with:
         environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
         user-name: ${{inputs.USERNAME}}
-        password-secret: ${{ secrets.userSecret }}
+        password-secret: ${{ secrets.PASSWORD }}
         solution-file: ${{ inputs.solution_outbound_folder}}/${{ inputs.solution_name }}.zip
         force-overwrite: true
         publish-changes: true
@@ -90,7 +90,7 @@ jobs:
       with:
         environment-url: ${{inputs.BUILD_ENVIRONMENT_URL}}
         user-name: ${{inputs.USERNAME}}
-        password-secret: ${{ secrets.userSecret }} 
+        password-secret: ${{ secrets.PASSWORD }} 
         solution-name: ${{ inputs.solution_name }}
         managed: true
         solution-output-file: ${{ inputs.solution_shipping_folder}}/${{ inputs.solution_name }}_managed.zip
@@ -122,7 +122,7 @@ jobs:
       with:
         environment-url: ${{inputs.PRODUCTION_ENVIRONMENT_URL}}
         user-name: ${{inputs.USERNAME}}
-        password-secret: ${{ secrets.userSecret }}
+        password-secret: ${{ secrets.PASSWORD }}
         solution-file: ${{ inputs.solution_release_folder}}/${{ inputs.solution_name }}_managed.zip
         force-overwrite: true
         publish-changes: true
