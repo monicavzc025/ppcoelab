@@ -11,7 +11,7 @@ on:
       solution_name:
         description: 'The solution name.'
         type: string
-        default: TestSolutionOlman       
+        default: ALMApprovals      
       solution_shipping_folder:
         description: 'folder name for staging the exported solution *do not change*'        
         type: string
@@ -40,18 +40,7 @@ on:
         description: 'User name to connect.'
         type: string
         required: true
-      CLIENT_ID: 
-        description: 'The client id'
-        type: string
-        required: true
-      TENANT_ID: 
-        description: 'The tenant id'
-        type: string
-        required: true
     secrets:
-      envSecret:
-        description: 'The secret value for authentication using SPN'
-        required: true
       password-secret:
         description: 'The secret value for authentication using SPN'
         required: true
