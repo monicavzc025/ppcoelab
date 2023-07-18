@@ -1,0 +1,134 @@
+{
+  "properties": {
+    "connectionReferences": {
+      "shared_visualstudioteamservices_2": {
+        "runtimeSource": "embedded",
+        "connection": {
+          "connectionReferenceLogicalName": "ppcoe_sharedvisualstudioteamservices_e721a"
+        },
+        "api": {
+          "name": "shared_visualstudioteamservices"
+        }
+      }
+    },
+    "definition": {
+      "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+      "contentVersion": "1.0.0.0",
+      "parameters": {
+        "$connections": {
+          "defaultValue": {},
+          "type": "Object"
+        },
+        "$authentication": {
+          "defaultValue": {},
+          "type": "SecureObject"
+        }
+      },
+      "triggers": {
+        "When_a_pull_request_is_created_(Git)": {
+          "recurrence": {
+            "interval": 1,
+            "frequency": "Minute"
+          },
+          "splitOn": "@triggerOutputs()?['body/value']",
+          "metadata": {
+            "operationMetadataId": "c75911a2-c434-414a-8693-422ea2a23c9d"
+          },
+          "type": "OpenApiConnection",
+          "inputs": {
+            "host": {
+              "connectionName": "shared_visualstudioteamservices_2",
+              "operationId": "OnGitPullCreated",
+              "apiId": "/providers/Microsoft.PowerApps/apis/shared_visualstudioteamservices"
+            },
+            "parameters": {
+              "account": "GlobalEngg",
+              "project": "COE ALM Demo",
+              "repository": "COE ALM Demo"
+            },
+            "authentication": "@parameters('$authentication')"
+          }
+        }
+      },
+      "actions": {
+        "Condition": {
+          "actions": {
+            "Send_an_HTTP_request_to_Azure_DevOps": {
+              "runAfter": {},
+              "metadata": {
+                "operationMetadataId": "3ad0fc06-fc74-472d-800c-ba5684e6899c"
+              },
+              "type": "OpenApiConnection",
+              "inputs": {
+                "host": {
+                  "connectionName": "shared_visualstudioteamservices_2",
+                  "operationId": "HttpRequest",
+                  "apiId": "/providers/Microsoft.PowerApps/apis/shared_visualstudioteamservices"
+                },
+                "parameters": {
+                  "account": "GlobalEngg",
+                  "parameters/Method": "GET",
+                  "parameters/Uri": "https://dev.azure.com/@{variables('ADO OrgName')}/@{variables('ADO Project Name')}/_apis/git/repositories/@{triggerOutputs()?['body/repository/id']}/pullrequests/@{triggerOutputs()?['body/pullRequestId']}?api-version=7.0"
+                },
+                "authentication": "@parameters('$authentication')"
+              }
+            }
+          },
+          "runAfter": {
+            "ADO_Project_Name": [
+              "Succeeded"
+            ]
+          },
+          "expression": {
+            "contains": [
+              "@triggerOutputs()?['body/title']",
+              "test"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "fac060ef-777c-4446-ba19-44100b3cf9bf"
+          },
+          "type": "If"
+        },
+        "ADO_Org_Name": {
+          "runAfter": {},
+          "metadata": {
+            "operationMetadataId": "9e8c43c1-f6ea-4d72-8c8a-c88dffc926a5"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ADO OrgName",
+                "type": "string",
+                "value": "GlobalEngg"
+              }
+            ]
+          }
+        },
+        "ADO_Project_Name": {
+          "runAfter": {
+            "ADO_Org_Name": [
+              "Succeeded"
+            ]
+          },
+          "metadata": {
+            "operationMetadataId": "7c607588-0f10-4df5-9b39-ba7d2793eb9e"
+          },
+          "type": "InitializeVariable",
+          "inputs": {
+            "variables": [
+              {
+                "name": "ADO Project Name",
+                "type": "string",
+                "value": "COE ALM Demo"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "templateName": ""
+  },
+  "schemaVersion": "1.0.0.0"
+}
